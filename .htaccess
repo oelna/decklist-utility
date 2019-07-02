@@ -1,0 +1,22 @@
+AddDefaultCharset UTF-8
+
+Options -Indexes
+DirectoryIndex deckcode.html index.php index.html
+
+RewriteEngine On
+RewriteBase /
+
+<Files "decks.db">
+	Order allow,deny
+	Deny from all
+</Files>
+
+<Files "config.php">
+	Order allow,deny
+	Deny from all
+</Files>
+
+<FilesMatch "^\.">
+	Order allow,deny
+	Deny from all
+</FilesMatch>
