@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>deckcodes</title>
+	<link rel="stylesheet" href="deckcode.css" />
+</head>
+
+<body>
+	<form id="userid-form">
+		<input type="text" id="userid" />
+		<input type="submit" id="submit-userid" value="Load user" />
+	</form>
+
+	<form id="input-form">
+		<input type="text" id="deckcode" />
+		<input type="submit" id="submit-deckcode" value="Decode" />
+	</form>
+
+	<ul class="saved-decks">
+		<!--<li><a href="#" data-deckcode="AAEBAaoICvYCshS1FKC2ApS9Ava9AuTCAsLOAuHpAs30AgbTAfAH96oC+6oCh7wClO8CAtYPBdG8AgM=">n-off deck</a></li>
+		<li><a href="#" data-deckcode="AAEBAR8ejQG1A4cEyQSXCMUI2wntCbkN9w2BDpAQ1BHKFMMW4KwCm8IC5MIC3sQC080C3dIC39IChtMC4eMC6uYCw+oCgPMCufgCoIADpIgDAAA=">reno hunter</a></li>-->
+	</ul>
+
+	<div id="card-detail">
+		<div id="card-image"><img alt="" /></div>
+	</div>
+	<div id="deck-container">
+		<h1 id="hero">Hero</h1>
+		<table id="deck"></table>
+
+		<div id="userdata">
+			<h2 id="user-deck-name">no name</h2>
+			<div id="user-deck-comment">no comment</div>
+		</div>
+
+		<ul id="manacurve" data-manacurve=""></ul>
+
+		<form id="clipboard-form">
+			<input type="text" id="code" /><button id="copy-deckcode" title="Copy deckcode to clipboard">Copy</button>
+		</form>
+	</div>
+
+	<form id="save-deck-form">
+		<input type="hidden" id="user-uuid" />
+		<input type="text" id="new-deck-name" placeholder="Deck name" /><br />
+		<textarea id="new-deck-comment" placeholder="Your comment."></textarea><br />
+		<button id="save-deckcode" title="Save this deckcode to your account">Save</button>
+	</form>
+
+	<script>
+		'use strict';
+
+		var oelna = window.oelna || {};
+		oelna.dl = window.oelna.dl || {};
+
+		oelna.dl.gameLocale = 'enUS';
+		oelna.dl.userDecks = [];
+
+		oelna.dl.appURL = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+		oelna.dl.appPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+		oelna.dl.dir = './';
+		oelna.dl.requiredFiles = [
+			oelna.dl.dir+'unpack.js',
+			oelna.dl.dir+'deckcode_lib.js',
+			oelna.dl.dir+'deckcode_frontend.js'
+		];
+		oelna.dl.filePromises = [];
+
+		oelna.dl.initUI = function() {
+			console.log('loading user interface');
+
+			// user ID stuff has to happen in here, because dependencies are not available earlier
+			if (!localStorage.getItem('clientUUID')) {
+				// set up a new user
+				oelna.dl.userUUID = oelna.dl.uuid();
+				localStorage.setItem('clientUUID', oelna.dl.userUUID);
+				console.log('generated new user', oelna.dl.userUUID);
+			} else {
+				// use the existing user profile
+				oelna.dl.userUUID = localStorage.clientUUID;
+				console.log('existing user', oelna.dl.userUUID);
+			}
+			document.querySelector('#user-uuid').value = oelna.dl.userUUID;
+			document.querySelector('#userid').value = oelna.dl.userUUID;
+
+			let formData = new FormData();
+			formData.append('user', oelna.dl.userUUID);
+
+			// load user decks from the server
+			(async () => {
+				const rawResponse = await fetch(oelna.dl.appURL + '/load_deck.json.php', {
+					method: 'POST',
+					headers: {
+						'Accept': 'application/json',
+					},
+					body: formData
+				});
+				oelna.dl.userDecks = await rawResponse.json();
+
+				let deckstring;
+				if (oelna.dl.userDecks.length > 0) {
+					deckstring = oelna.dl.userDecks[0].deckcode;
+					console.log('loading deckcode:', deckstring);
+				} else {
+					deckstring = 'AAEBAc2xAgjAAe0E7QX3DdYRh6wC8fsCoIADC8kDqwTLBPsMhRDH0wKW6AK0/ALNiQPXiQOfmwMA';
+					deckstring = false;
+					console.log('loading default deckcode:', deckstring);
+				}
+
+				// render list of user decks
+				oelna.dl.userDecksList(oelna.dl.userDecks);
+
+				oelna.dl.loadCardData(function() {
+					if (!deckstring) {
+						oelna.dl.resetUI();
+						alert('You don\'t have any decks saved yet! Try entering a deck code and save it!');
+					} else {
+						oelna.dl.loadDeckFromDeckcode(deckstring);
+					}
+				});
+			})();
+		}
+
+		// prepare files to load
+		for (let i in oelna.dl.requiredFiles) {
+			oelna.dl.filePromises.push(new Promise((resolve, reject) => {
+				const script = document.createElement('script');
+				document.body.appendChild(script);
+				script.onload = resolve;
+				script.onerror = reject;
+				script.async = true;
+				script.src = oelna.dl.requiredFiles[i];
+			}));
+		}
+
+		// load the files
+		Promise.all(oelna.dl.filePromises).then(oelna.dl.initUI);
+
+		/*
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register(oelna.dl.appURL+'/serviceworker.js', {scope: oelna.dl.appPath+'/'})
+			.then(function(reg) {
+				// registration worked
+				console.log('Registration succeeded. Scope is ' + reg.scope);
+			}).catch(function(error) {
+				// registration failed
+				console.log('Registration failed with ' + error);
+			});
+		}
+		*/
+	</script>
+</body>
+</html>

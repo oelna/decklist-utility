@@ -1,0 +1,171 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+@keyframes fadein {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+html {
+	font: 100%/1.4 --system-ui, Helvetica, Arial, sans-serif;
+}
+
+body {
+	padding: 2em;
+}
+
+input[type="text"],
+textarea {
+	border: 1px solid #000;
+}
+
+input[type="submit"],
+button {
+	border: 1px solid #000;
+}
+
+#userid-form {
+	border: 1px solid #f0f;
+}
+
+#input-form {
+	border: 1px solid #f0f;
+}
+
+.saved-decks {
+	height: 9em;
+	border: 1px solid #f0f;
+	overflow: auto;
+}
+
+.saved-decks li {
+	list-style: none;
+}
+
+.saved-decks li a {
+	text-decoration: none;
+	color: #007aff;
+}
+
+#hero {
+	text-transform: capitalize;
+}
+
+#deck-container {
+	border: 1px solid #f0f;
+}
+
+#deck {
+	table-layout: fixed;
+	border-collapse: collapse;
+	border: 1px solid #000;
+	margin-bottom: 1em;
+	width: 12em;
+}
+
+#deck tr {
+	animation-duration: 1s;
+	animation-name: fadein;
+	animation-fill-mode: forwards;
+}
+
+#deck td {
+	padding: 0.2em 0.5em 0.2em 0.7em;
+	cursor: pointer;
+}
+
+#deck tr + tr td {
+	border-top: 1px solid hsla(0, 0%, 0%, 0.15);
+}
+
+#deck tr::before {
+	content: "";
+	display: block;
+	width: 0em;
+	height: CALC(0.4em + 1.4em);
+	margin: 0;
+	border-left: 5px solid #795548;
+}
+
+#deck tr.rarity-common::before { border-left-color: #8bc34a; }
+#deck tr.rarity-rare::before { border-left-color: #2196f3; }
+#deck tr.rarity-epic::before { border-left-color: #673ab7; }
+#deck tr.rarity-legendary::before { border-left-color: #ff9800; }
+
+#deck td.cost { width: 3ch; }
+#deck td.name { width: 80%; }
+#deck td.amount { width: 3ch; }
+
+#deck td.name span {
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+#card-detail {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: none;
+	border: 1px solid #f0f;
+}
+
+#card-detail.show {
+	display: block;
+}
+
+#manacurve {
+	width: 7em;
+	height: 4em;
+	display: flex;
+	align-items: flex-end;
+	padding: 0;
+	background-color: #fff;
+	border: 1px solid #000;
+}
+
+#manacurve li {
+	flex: 1;
+	list-style: none;
+	background-color: #2196f3;
+	border-top-left-radius: 0.08em;
+	border-top-right-radius: 0.08em;
+}
+
+#manacurve li + li {
+	border-left: 0.08em solid #fff;
+}
+
+#manacurve meter {
+	display: block;
+	width: 100%;
+	height: 1em;
+}
+
+#manacurve meter + meter {
+	border-top: 1px solid #fff;
+}
+
+#manacurve meter::-webkit-meter-bar {
+	background: none;
+	background-color: #ccc;
+}
+
+#manacurve meter::-webkit-meter-optimum-value {
+	background: none;
+	background-color: #007aff;
+}
+
+#save-deck-form {
+	border: 1px solid #f0f;
+}
