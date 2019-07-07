@@ -102,6 +102,7 @@ oelna.dl.showCardDetail = function(dbfId) {
 
 	if (card.imageURL === undefined) {
 		// create URL for the first time
+		if (!card.id) return false;
 		card.imageURL = apiURL+'/'+oelna.dl.gameLocale+'/'+assetSize+'/'+card.id+'.png';
 
 		// preserve the image URL we generated upstream
@@ -241,28 +242,40 @@ oelna.dl.displayManacurve = function() {
 
 // copy to clipboard (from https://stackoverflow.com/a/30810322/3625228)
 oelna.dl.fallbackCopyDeckcodeToClipboard = function(input) {
-  input.focus();
-  input.select();
+	input.focus();
+	input.select();
 
-  try {
-	const successful = document.execCommand('copy');
-	if (successful) console.log('Copied deckcode '+input.value+' to clipboard.');
-  } catch (err) {
-	console.error('Unable to copy to clipboard!', err);
-  }
+	try {
+		const successful = document.execCommand('copy');
+		if (successful) console.log('Copied deckcode '+input.value+' to clipboard.');
+	} catch (err) {
+		console.error('Unable to copy to clipboard!', err);
+	}
 
-  document.body.removeChild(textArea);
+	document.body.removeChild(textArea);
 }
+
 oelna.dl.copyDeckcodeToClipboard = function(input) {
-  if (!navigator.clipboard) {
-	oelna.dl.fallbackCopyTextToClipboard(input);
-	return;
-  }
-  navigator.clipboard.writeText(input.value).then(function() {
-	console.log('Copied deckcode '+input.value+' to clipboard.');
-  }, function(err) {
-	console.error('Could not copy deckcode: ', err);
-  });
+	if (!navigator.clipboard) {
+		oelna.dl.fallbackCopyTextToClipboard(input);
+		return;
+	}
+	navigator.clipboard.writeText(input.value).then(function() {
+		console.log('Copied deckcode '+input.value+' to clipboard.');
+	}, function(err) {
+		console.error('Could not copy deckcode: ', err);
+	});
+}
+
+oelna.dl.toggleUserIdOverlay = function() {
+	const modal = document.querySelector('#change-user-dialog');
+
+	if (window.getComputedStyle(modal).display === 'none') {
+		modal.showModal();
+	} else {
+		modal.close();
+	}
+
 }
 
 document.querySelector('#copy-deckcode').addEventListener('click', function() {
@@ -275,6 +288,13 @@ document.querySelector('#input-form').addEventListener('submit', function(e) {
 
 	const deckstring = document.querySelector('#deckcode').value;
 	oelna.dl.loadDeckFromDeckcode(deckstring);
+});
+
+document.querySelectorAll('.toggle-change-user-dialog').forEach(function(ele, i) {
+	ele.addEventListener('click', function(e) {
+		e.preventDefault();
+		oelna.dl.toggleUserIdOverlay();
+	});
 });
 
 document.querySelector('#userid-form').addEventListener('submit', function(e) {

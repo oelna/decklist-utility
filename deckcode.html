@@ -7,10 +7,17 @@
 </head>
 
 <body>
-	<form id="userid-form">
-		<input type="text" id="userid" />
-		<input type="submit" id="submit-userid" value="Load user" />
-	</form>
+	<p><a href="#" class="toggle-change-user-dialog">Change User ID</a></p>
+	<dialog id="change-user-dialog" open>
+		<h2>Edit User ID</h2>
+		<p>To change your user ID, enter the new one and confirm.</p>
+		<p>To sync different devices to the one ID, enter the same ID on all of them.</p>
+		<form id="userid-form">
+			<input type="text" id="userid" />
+			<input type="submit" id="submit-userid" class="button" value="Load user" />
+		</form>
+		<p><a href="#" class="button toggle-change-user-dialog">Close</a></p>
+	</dialog>
 
 	<form id="input-form">
 		<input type="text" id="deckcode" />
