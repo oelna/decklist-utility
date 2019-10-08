@@ -302,11 +302,20 @@ oelna.dl.toggleUserIdOverlay = function() {
 	const modal = document.querySelector('#change-user-dialog');
 
 	if (window.getComputedStyle(modal).display === 'none') {
-		modal.showModal();
+		if (typeof modal.showModal === 'function') {
+			modal.showModal();
+		} else {
+			modal.setAttribute('open', '');
+			modal.classList.add('polyfill');
+		}
 	} else {
-		modal.close();
+		if (typeof modal.close === 'function') {
+			modal.close();
+		} else {
+			modal.removeAttribute('open');
+			modal.classList.remove('polyfill');
+		}
 	}
-
 }
 
 document.querySelector('#copy-deckcode').addEventListener('click', function() {
