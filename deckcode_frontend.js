@@ -11,6 +11,15 @@ oelna.dl.uuid = function() {
 	});
 }
 
+// via https://stackoverflow.com/a/12462387/3625228
+oelna.dl.arraySearch = function(nameKey, prop, myArray) {
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i][prop] === nameKey) {
+            return myArray[i];
+        }
+    }
+}
+
 oelna.dl.live = function (eventType, elementQuerySelector, cb) {
 	document.addEventListener(eventType, function (event) {
 
@@ -62,6 +71,10 @@ oelna.dl.loadDeckFromDeckcode = function(deckcode) {
 	const prepared = oelna.dl.prepareDeckstring(deckcode);
 	const parsed = oelna.dl.parseDeckstring(prepared, true);
 
+	// clear the last deck notes
+	document.querySelector('#user-deck-name').innerHTML = 'yyyy';
+	document.querySelector('#user-deck-comment').innerHTML = 'xxx';
+
 	oelna.dl.displayDeck(parsed);
 }
 
@@ -95,7 +108,7 @@ oelna.dl.showCardDetail = function(dbfId) {
 	// https://hearthstonejson.com/docs/images.html
 	const apiURL = 'https://art.hearthstonejson.com/v1/render/latest';
 	const assetSize = '256x';
-	const containerElement = document.querySelector('#card-detail');
+	const containerElement = document.querySelector('#card');
 	const image = containerElement.querySelector('img');
 
 	const card = oelna.dl.cardDataByDbfId(dbfId);
@@ -122,7 +135,7 @@ oelna.dl.showCardDetail = function(dbfId) {
 }
 
 oelna.dl.hideCardDetail = function() {
-	const containerElement = document.querySelector('#card-detail');
+	const containerElement = document.querySelector('#card');
 	containerElement.classList.remove('show');
 }
 
@@ -132,6 +145,7 @@ oelna.dl.resetUI = function() {
 	document.querySelector('#code').value = '';
 	document.querySelector('#new-deck-name').value = '';
 	document.querySelector('#new-deck-comment').value = '';
+
 	console.warn('the entire user interface was reset.');
 }
 
@@ -202,17 +216,34 @@ oelna.dl.displayDeck = function(deckData) {
 
 	document.querySelector('#code').value = oelna.dl.activeDeckcode;
 
-	// todo: get user deck name and comment from the decks list!
+	// load user data, if possible
+	const userData = oelna.dl.arraySearch(oelna.dl.activeDeckcode, 'deckcode', oelna.dl.userDecks);
+
 	let userDeckName = document.querySelector('#user-deck-name');
-	userDeckName.innerHTML = 'abc123';
 	let userDeckComment = document.querySelector('#user-deck-comment');
-	userDeckComment.innerHTML = 'bla blah.';
+
+	if (userData) {
+		userDeckName.innerHTML = userData['deck_name'];
+		userDeckComment.innerHTML = '<p>' + userData['deck_comment'] + '</p>';
+
+		// make a pretty date
+		const dateSaved = new Date(userData['date_saved'] * 1000);
+		const day = dateSaved.getDate().toString().padStart(2, '0');
+		const month = (dateSaved.getMonth()+1).toString().padStart(2, '0');
+
+		const rfcDate = dateSaved.getFullYear() +'-'+ month +'-'+ day;
+
+		userDeckComment.innerHTML += '<p class="comment">You saved this deck on <time datetime="'+rfcDate+'">' + rfcDate + '</time></p>';
+	} else {
+		userDeckName.innerHTML = 'Unknown deck';
+		userDeckComment.innerHTML = 'This is a new deck. Save it and make some notes. They will appear here.';
+	}
 
 	oelna.dl.displayManacurve();
 }
 
 oelna.dl.emptyManacurve = function() {
-	let manacurveElement = document.querySelector('#manacurve');
+	let manacurveElement = document.querySelector('#manacurve ul');
 
 	let manacurveElementClone = manacurveElement.cloneNode(false);
 	manacurveElement.parentNode.replaceChild(manacurveElementClone, manacurveElement);
@@ -226,7 +257,7 @@ oelna.dl.displayManacurve = function() {
 	const maxValue = Math.max(...manacurve);
 
 	oelna.dl.emptyManacurve();
-	let manacurveElement = document.querySelector('#manacurve');
+	let manacurveElement = document.querySelector('#manacurve ul');
 
 	manacurveElement.setAttribute('data-manacurve', JSON.stringify(manacurve));
 
@@ -328,7 +359,7 @@ document.querySelector('#save-deck-form').addEventListener('submit', function(e)
 		'name': e.target.querySelector('#new-deck-name').value,
 		'comment': e.target.querySelector('#new-deck-comment').value,
 		'code': oelna.dl.activeDeckcode,
-		'curve': JSON.parse(document.querySelector('#manacurve').getAttribute('data-manacurve')),
+		'curve': JSON.parse(document.querySelector('#manacurve ul').getAttribute('data-manacurve')),
 		'timestamp': Math.floor(Date.now() / 1000)
 	};
 

@@ -7,53 +7,78 @@
 </head>
 
 <body>
-	<p><a href="#" class="toggle-change-user-dialog">Change User ID</a></p>
-	<dialog id="change-user-dialog" open>
-		<h2>Edit User ID</h2>
-		<p>To change your user ID, enter the new one and confirm.</p>
-		<p>To sync different devices to the one ID, enter the same ID on all of them.</p>
-		<form id="userid-form">
-			<input type="text" id="userid" />
-			<input type="submit" id="submit-userid" class="button" value="Load user" />
-		</form>
-		<p><a href="#" class="button toggle-change-user-dialog">Close</a></p>
-	</dialog>
 
-	<form id="input-form">
-		<input type="text" id="deckcode" />
-		<input type="submit" id="submit-deckcode" value="Decode" />
-	</form>
+	<div id="grid">
+		<section id="import">
+			<h2>Import a deck</h2>
+			<form id="input-form">
+				<input type="text" id="deckcode" placeholder="AAEBAR8ejQG1A4cEyQSXCMUI2wntCbkN…" />
+				<input type="submit" id="submit-deckcode" value="Decode" />
+			</form>
+		</section>
 
-	<ul class="saved-decks">
-		<!--<li><a href="#" data-deckcode="AAEBAaoICvYCshS1FKC2ApS9Ava9AuTCAsLOAuHpAs30AgbTAfAH96oC+6oCh7wClO8CAtYPBdG8AgM=">n-off deck</a></li>
-		<li><a href="#" data-deckcode="AAEBAR8ejQG1A4cEyQSXCMUI2wntCbkN9w2BDpAQ1BHKFMMW4KwCm8IC5MIC3sQC080C3dIC39IChtMC4eMC6uYCw+oCgPMCufgCoIADpIgDAAA=">reno hunter</a></li>-->
-	</ul>
+		<nav id="nav-meta">
+			<p><button class="toggle-change-user-dialog">Change User ID</button></p>
 
-	<div id="card-detail">
-		<div id="card-image"><img alt="" /></div>
+			<dialog id="change-user-dialog">
+				<h2>Edit User ID</h2>
+				<p>To change your user ID, enter the new one and confirm.</p>
+				<p>To sync different devices to one ID, enter the same ID on all of them.</p>
+				<p class="warning">Take care to not lose the ID you're using! It can not be recovered!</p>
+				<form id="userid-form">
+					<input type="text" id="userid" />
+					<input type="submit" id="submit-userid" class="button" value="Load user" />
+				</form>
+				<p><button class="toggle-change-user-dialog">Close</button></p>
+			</dialog>
+		</nav>
+
+		<section id="card-list">
+			<h1 id="hero">Hero</h1>
+			<table id="deck"></table>
+		</section>
+
+		<section id="deck-notes">
+			<div id="userdata">
+				<h2 id="user-deck-name">no name</h2>
+				<div id="user-deck-comment">no comment</div>
+			</div>
+		</section>
+
+		<aside id="deck-save">
+			<h2>Copy deck string</h2>
+			<form id="clipboard-form">
+				<input type="text" id="code" /><button id="copy-deckcode" title="Copy deckcode to clipboard">Copy</button>
+			</form>
+
+			<hr />
+
+			<h2>Save this deck</h2>
+			<form id="save-deck-form">
+				<input type="hidden" id="user-uuid" />
+				<input type="text" id="new-deck-name" placeholder="Name your deck" />
+				<textarea rows="5" id="new-deck-comment" placeholder="Add some notes"></textarea>
+				<button id="save-deckcode" title="Save this deckcode to your account">Save</button>
+			</form>
+		</aside>
+
+		<nav id="decks-list">
+			<h2>Your saved decks</h2>
+			<ul class="saved-decks">
+				<!--<li><a href="#" data-deckcode="AAEBAaoICvYCshS1FKC2ApS9Ava9AuTCAsLOAuHpAs30AgbTAfAH96oC+6oCh7wClO8CAtYPBdG8AgM=">n-off deck</a></li>
+				<li><a href="#" data-deckcode="AAEBAR8ejQG1A4cEyQSXCMUI2wntCbkN9w2BDpAQ1BHKFMMW4KwCm8IC5MIC3sQC080C3dIC39IChtMC4eMC6uYCw+oCgPMCufgCoIADpIgDAAA=">reno hunter</a></li>-->
+			</ul>
+		</nav>
+
+		<section id="card">
+			<div id="card-image"><img alt="" /></div>
+		</section>
+
+		<section id="manacurve">
+			<h2>Mana curve</h2>
+			<ul data-manacurve=""></ul>
+		</section>
 	</div>
-	<div id="deck-container">
-		<h1 id="hero">Hero</h1>
-		<table id="deck"></table>
-
-		<div id="userdata">
-			<h2 id="user-deck-name">no name</h2>
-			<div id="user-deck-comment">no comment</div>
-		</div>
-
-		<ul id="manacurve" data-manacurve=""></ul>
-
-		<form id="clipboard-form">
-			<input type="text" id="code" /><button id="copy-deckcode" title="Copy deckcode to clipboard">Copy</button>
-		</form>
-	</div>
-
-	<form id="save-deck-form">
-		<input type="hidden" id="user-uuid" />
-		<input type="text" id="new-deck-name" placeholder="Deck name" /><br />
-		<textarea id="new-deck-comment" placeholder="Your comment."></textarea><br />
-		<button id="save-deckcode" title="Save this deckcode to your account">Save</button>
-	</form>
 
 	<script>
 		'use strict';
