@@ -337,6 +337,7 @@ p.warning {
 }
 
 #change-user-dialog {
+	display: none;
 	position: absolute;
 	z-index: 1000;
 	margin: 0 auto;
@@ -345,6 +346,16 @@ p.warning {
 	box-shadow: 0 0.25em 1em hsla(0, 0%, 0%, 0.3);
 	text-align: left;
 	background-color: #fffceb;
+}
+
+#change-user-dialog.polyfill {
+	width: calc(100% - 1em);
+	left: 0.5em;
+}
+
+#change-user-dialog.open,
+#change-user-dialog[open] {
+	display: block;
 }
 
 #change-user-dialog input[type="text"] {
@@ -431,5 +442,10 @@ p.warning {
 		width: CALC(100% + 2em);
 		margin-left: -1em;
 		margin-right: -1em;
+	}
+
+	#change-user-dialog.polyfill {
+		width: 30em;
+		left: calc(50% - 15em);
 	}
 }
