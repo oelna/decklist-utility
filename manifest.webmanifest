@@ -1,0 +1,19 @@
+{
+  "name": "Deck Codes",
+  "short_name": "Deck Codes",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#bccccf",
+  "description": "Save and manage your Hearthstone deck codes.",
+  "icons": [{
+    "src": "icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "related_applications": []
+}
