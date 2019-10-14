@@ -318,7 +318,8 @@ oelna.dl.toggleUserIdOverlay = function() {
 	}
 }
 
-document.querySelector('#copy-deckcode').addEventListener('click', function() {
+document.querySelector('#copy-deckcode').addEventListener('click', function(e) {
+	e.preventDefault();
 	const deckcodeInput = document.querySelector('#code');
 	oelna.dl.copyDeckcodeToClipboard(deckcodeInput);
 });
