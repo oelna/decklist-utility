@@ -48,6 +48,18 @@ oelna.dl.varintDecode = function(bytes, swapEndian) {
 	return result;
 }
 
+oelna.dl.extractDeckstring = function(inputString) {
+  const deckstring = inputString.match(/[A-Za-z0-9+\/=]{16,}/g);
+
+  if (typeof deckstring[0] === 'string') {
+    console.log('found deckstring:', deckstring[0]);
+    return deckstring[0];
+  } else {
+    console.error('No deckstring found in input!');
+    return false;
+  }
+}
+
 oelna.dl.prepareDeckstring = function(deckstring) {
   if (!unpack) return [];
 

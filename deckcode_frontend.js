@@ -66,9 +66,12 @@ oelna.dl.loadDeckFromDeckcode = function(deckcode) {
 		return false;
 	}
 
-	oelna.dl.activeDeckcode = deckcode;
+	// clean up the input and extract the raw deckcode
+	const cleanDeckcode = oelna.dl.extractDeckstring(deckcode);
 
-	const prepared = oelna.dl.prepareDeckstring(deckcode);
+	oelna.dl.activeDeckcode = cleanDeckcode;
+
+	const prepared = oelna.dl.prepareDeckstring(cleanDeckcode);
 	const parsed = oelna.dl.parseDeckstring(prepared, true);
 
 	// clear the last deck notes

@@ -12,13 +12,15 @@ I host a demo that is completely usable (with no guarantees though!) on [dcklst.
 
 ## Instructions
 
-I tried to make everything self-explanatory. Import a deck code to preview the deck and cards – no need to make an account or anything. If you choose to save the deck for later, put in a name and, if you like, description, so you can identify it later. Your deck info is saved in a small database that resides on the webserver. Ideally I'd like to make offline storage in the browser possible via Javascript localstorage, but I haven't gotten to it yet, and who knows if I will. Take it as is.
+I tried to make everything self-explanatory. Import a deck code (either the [full text](https://hearthstone.gamepedia.com/Deck_Importing#Example_2), or just the Base64 string) to preview the deck and cards – no need to make an account or anything. If you choose to save the deck for later, put in a name and, if you like, description, so you can identify it later. Your deck info is saved in a small database that resides on the webserver. Ideally I'd like to make offline storage in the browser possible via Javascript localstorage, but I haven't gotten to it yet, and who knows if I will. Take it as is.
 
 The app also displays the deck code and mana curve of the decklist. There is also a list of your saved decks, so you can easily access them at any point. There is currently no hard limit on the amount of decks that can be saved by a single user, but I may need to put one in if spam or abuse become a problem.
 
 If you would like to build on my code, read on:
 
 ## Using the standalone Javascript parser
+
+**This works without a Node.js server, any weird dependencies or setup! Just plain Javascript in your browser.**
 
 Download and link to [deckcode_lib.js](deckcode_lib.js) and [unpack.js](unpack.js)
 
@@ -32,7 +34,11 @@ let deckData = oelna.dl.parseDeckstring(preparedDeckstring, false);
 
 `deckData` will contain an Object of deck information, such as format, hero and card IDs, which can be matched to cards via [hearthstonejson.com API](https://api.hearthstonejson.com).
 
+Use `oelna.dl.extractDeckstring()` on your input first, if you want to allow for dirty input, eg. the Base64 string is somewhere inside the input string.
+
 ## Using the standalone PHP parser
+
+**No external dependencies or setup! PHP 5+**
 
 Download and include [deckcode_lib.php](deckcode_lib.php)
 

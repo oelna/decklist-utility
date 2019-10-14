@@ -35,7 +35,14 @@
 	function decode_deckstring(string $deckstring) {
 		if(!$deckstring) return array();
 
-		$decoded = base64_decode($deckstring);
+		$clean_deckstring = '';
+		if(preg_match('/[A-Za-z0-9+\/=]{16,}/', $deckstring, $matched) === 1) {
+			$clean_deckstring = $matched[0];
+		} else {
+			return array();
+		}
+
+		$decoded = base64_decode($clean_deckstring);
 
 		$byte_array = unpack('C*', $decoded);
 
